@@ -21,12 +21,14 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "configobject.h"
+#include "preferences/configobject.h"
 #include "preferences/usersettings.h"
 #include "preferences/constants.h"
-#include "trackinfoobject.h"
+#include "track/track.h"
 #include "util/cmdlineargs.h"
 #include "util/timer.h"
+
+#include "mscrossfader.h" //s_a edit
 
 class ControlPushButton;
 class ControllerManager;
@@ -37,11 +39,11 @@ class EngineMaster;
 class GuiTick;
 class LaunchImage;
 class Library;
-class MixxxKeyboard;
+class KeyboardEventFilter;
 class PlayerManager;
 class RecordingManager;
 class SettingsManager;
-class ShoutcastManager;
+class BroadcastManager;
 class SkinLoader;
 class SoundManager;
 class VinylControlManager;
@@ -145,8 +147,8 @@ class MixxxMainWindow : public QMainWindow {
     PlayerManager* m_pPlayerManager;
     // RecordingManager
     RecordingManager* m_pRecordingManager;
-#ifdef __SHOUTCAST__
-    ShoutcastManager* m_pShoutcastManager;
+#ifdef __BROADCAST__
+    BroadcastManager* m_pBroadcastManager;
 #endif
     ControllerManager* m_pControllerManager;
 
@@ -154,7 +156,7 @@ class MixxxMainWindow : public QMainWindow {
 
     VinylControlManager* m_pVCManager;
 
-    MixxxKeyboard* m_pKeyboard;
+    KeyboardEventFilter* m_pKeyboard;
     // The library management object
     Library* m_pLibrary;
 
@@ -178,6 +180,8 @@ class MixxxMainWindow : public QMainWindow {
 
     static const int kMicrophoneCount;
     static const int kAuxiliaryCount;
+
+    MSCrossFader* p_mscrossfad; //s_a edit
 };
 
 #endif
