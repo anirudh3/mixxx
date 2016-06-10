@@ -746,7 +746,7 @@ class MixxxCore(Feature):
                    "mixxx.cpp",
                    "mixxxapplication.cpp",
                    "errordialoghandler.cpp",
-                   "mscrossfader.cpp"
+                   "mscrossfader.cpp",
 
                    "sources/audiosource.cpp",
                    "sources/soundsource.cpp",
