@@ -17,7 +17,7 @@ public:
     MSCrossFader();
     void performTransition();
     double getCrossFader();
-    void setCrossFader();
+    void setCrossFader(double);
 //    MSCrossFader(const MSCrossFader &);
 //    MSCrossFader &operator=(const MSCrossFader &);
     ~MSCrossFader();

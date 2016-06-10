@@ -11,14 +11,14 @@ void MSCrossFader::performTransition(){
     int i = 0;
     while(i<1000){
         if(i%100 == 0){
-            setCrossFader((i/100)%2)
+            setCrossFader(((i/100)%2));
         }
     }
 }
 
 
 double MSCrossFader::getCrossFader(){
-    return mscrossfad->get()
+    return mscrossfad->get();
 }
 
 
