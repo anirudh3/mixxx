@@ -6,11 +6,14 @@
 #include <QModelIndexList>
 
 #include "preferences/usersettings.h"
-#include "controlobjectslave.h"
+#include "control/controlproxy.h"
 #include "engine/enginechannel.h"
 #include "library/playlisttablemodel.h"
-#include "trackinfoobject.h"
+#include "track/track.h"
 #include "util/class.h"
+
+
+#include "mscrossfader.h" //s_a edit
 
 class ControlPushButton;
 class TrackCollection;
@@ -85,9 +88,9 @@ class DeckAttributes : public QObject {
 
   private:
     EngineChannel::ChannelOrientation m_orientation;
-    ControlObjectSlave m_playPos;
-    ControlObjectSlave m_play;
-    ControlObjectSlave m_repeat;
+    ControlProxy m_playPos;
+    ControlProxy m_play;
+    ControlProxy m_repeat;
     BaseTrackPlayer* m_pPlayer;
 };
 
@@ -200,13 +203,15 @@ class AutoDJProcessor : public QObject {
 
     QList<DeckAttributes*> m_decks;
 
-    ControlObjectSlave* m_pCOCrossfader;
-    ControlObjectSlave* m_pCOCrossfaderReverse;
+    ControlProxy* m_pCOCrossfader;
+    ControlProxy* m_pCOCrossfaderReverse;
 
     ControlPushButton* m_pSkipNext;
     ControlPushButton* m_pFadeNow;
     ControlPushButton* m_pShufflePlaylist;
     ControlPushButton* m_pEnabledAutoDJ;
+
+    MSCrossFader* p_mscrossfad; //s_a edit
 
     DISALLOW_COPY_AND_ASSIGN(AutoDJProcessor);
 };

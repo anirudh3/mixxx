@@ -1,8 +1,8 @@
 #include "library/autodj/autodjprocessor.h"
 
 #include "library/trackcollection.h"
-#include "controlpushbutton.h"
-#include "controlobjectslave.h"
+#include "control/controlpushbutton.h"
+#include "control/controlproxy.h"
 #include "util/math.h"
 #include "mixer/playermanager.h"
 #include "mixer/basetrackplayer.h"
@@ -117,8 +117,8 @@ AutoDJProcessor::AutoDJProcessor(QObject* pParent,
     // Auto-DJ needs at least two decks
     DEBUG_ASSERT(m_decks.length() > 1);
 
-    m_pCOCrossfader = new ControlObjectSlave("[Master]", "crossfader");
-    m_pCOCrossfaderReverse = new ControlObjectSlave("[Mixer Profile]", "xFaderReverse");
+    m_pCOCrossfader = new ControlProxy("[Master]", "crossfader");
+    m_pCOCrossfaderReverse = new ControlProxy("[Mixer Profile]", "xFaderReverse");
 
     QString str_autoDjTransition = m_pConfig->getValueString(
             ConfigKey(kConfigKey, kTransitionPreferenceName));
@@ -126,6 +126,9 @@ AutoDJProcessor::AutoDJProcessor(QObject* pParent,
         m_iTransitionTime = str_autoDjTransition.toInt();
         m_nextTransitionTime =  m_iTransitionTime;
     }
+
+    p_mscrossfad = new MSCrossFader();
+
 }
 
 AutoDJProcessor::~AutoDJProcessor() {
@@ -143,9 +146,13 @@ AutoDJProcessor::~AutoDJProcessor() {
 }
 
 double AutoDJProcessor::getCrossfader() const {
-    if (m_pCOCrossfaderReverse->toBool()) {
-        return m_pCOCrossfader->get() * -1.0;
-    }
+//    if (m_pCOCrossfaderReverse->toBool()) {
+//        qDebug() << "cross reverse value:" << m_pCOCrossfaderReverse->toBool();
+//        qDebug() << "cross fader value:" << m_pCOCrossfader->get();
+
+//        return m_pCOCrossfader->get() * -1.0;
+//    }
+    qDebug() << "cross fader value:" << m_pCOCrossfader->get();
     return m_pCOCrossfader->get();
 }
 
@@ -183,34 +190,62 @@ AutoDJProcessor::AutoDJError AutoDJProcessor::fadeNow() {
     DEBUG_ASSERT_AND_HANDLE(m_decks.length() > 1) {
         return ADJ_NOT_TWO_DECKS;
     }
+
+//    p_mscrossfad->getCrossFader(); //s_a
+//    qDebug() << "cross reverse value:" << m_pCOCrossfaderReverse->toBool(); //s_a
+//    qDebug() << "cross fader value:" << m_pCOCrossfader->get(); //s_a
+//    //printf("value of cross fader in auto dj: %f",p_mscrossfad->getCrossFader()); //s_a
+
     if (m_eState == ADJ_IDLE) {
         double crossfader = getCrossfader();
+        qDebug() << "Cross Fader Value:" << crossfader;// s_a
         DeckAttributes& leftDeck = *m_decks[0];
         DeckAttributes& rightDeck = *m_decks[1];
+
+
+
         if (crossfader <= 0.3 && leftDeck.isPlaying()) {
             // left deck is playing and the crossfader is on the left
 
-            // Make sure leftDeck.fadeDuration is up to date.
-            calculateTransition(&leftDeck, &rightDeck);
 
-            // override posThreshold to start fade now
+            // get the transition time by passing the number of bars over which the user wants to fade, s_a
+            leftDeck.fadeDuration = p_mscrossfad->fadercalc(2)/100 ; //s_a
+            //qDebug() << "MyTransTime:" << p_mscrossfad->fadercalc(2); // s_a
+
             leftDeck.posThreshold = leftDeck.playPosition() -
-                    ((crossfader + 1.0) / 2 * (leftDeck.fadeDuration));
-            // Repeat is disabled by FadeNow but disables auto Fade
-            leftDeck.setRepeat(false);
+                    ((crossfader + 1.0) / 2 * (leftDeck.fadeDuration)); //s_a
+            leftDeck.setRepeat(false); //s_a
+
+//            // Make sure leftDeck.fadeDuration is up to date.
+//            calculateTransition(&leftDeck, &rightDeck);
+
+//            // override posThreshold to start fade now
+//            qDebug() << "leftDeckPlayPosition:" << leftDeck.playPosition(); //s_a
+            qDebug() << "leftDeckFadeDuration:" << leftDeck.fadeDuration; //s_a
+//            leftDeck.posThreshold = leftDeck.playPosition() -
+//                    ((crossfader + 1.0) / 2 * (leftDeck.fadeDuration));
+            qDebug() << "leftDeckposT:" << leftDeck.posThreshold; //s_a
+
+
+//            // Repeat is disabled by FadeNow but disables auto Fade
+//            leftDeck.setRepeat(false);
         } else if (crossfader >= -0.3 && rightDeck.isPlaying()) {
             // right deck is playing and the crossfader is on the right
 
-            // Make sure rightDeck.fadeDuration is up to date.
-            calculateTransition(&rightDeck, &leftDeck);
+//            // Make sure rightDeck.fadeDuration is up to date.
+//            calculateTransition(&rightDeck, &leftDeck);
 
-            // override posThreshold to start fade now
-            rightDeck.posThreshold = rightDeck.playPosition() -
-                    ((1.0 - crossfader) / 2 * (rightDeck.fadeDuration));
-            // Repeat is disabled by FadeNow but disables auto Fade
-            rightDeck.setRepeat(false);
+//            // override posThreshold to start fade now
+//            qDebug() << "rightDeckPlayPosition:" << rightDeck.playPosition(); //s_a
+//            qDebug() << "rightDeckFadeDuration:" << rightDeck.fadeDuration; //s_a
+//            rightDeck.posThreshold = rightDeck.playPosition() -
+//                    ((1.0 - crossfader) / 2 * (rightDeck.fadeDuration));
+//            qDebug() << "rightDeckposT:" << rightDeck.posThreshold; // s_a
+
+//            // Repeat is disabled by FadeNow but disables auto Fade
+//            rightDeck.setRepeat(false);
         }
-        // else { // do not know what to do  }
+//        // else { // do not know what to do  }
     }
     return ADJ_OK;
 }
@@ -799,7 +834,7 @@ void AutoDJProcessor::playerEmpty(DeckAttributes* pDeck) {
         qDebug() << this << "playerEmpty()" << pDeck->group;
     }
 
-    // The Deck has ejected a track and no new one is loaded 
+    // The Deck has ejected a track and no new one is loaded
     // This happens if loading fails or the user manually ejected the track
     // and would normally stopp the AutoDJ flow, which is not desired.
     // It should be safe to load a load a new track from the queue. The only case where

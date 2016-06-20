@@ -150,6 +150,10 @@ MixxxMainWindow::MixxxMainWindow(QApplication* pApp, const CmdlineArgs& args)
     pApp->processEvents();
 
     initialize(pApp, args);
+
+
+    p_mscrossfad = new MSCrossFader(); //s_a
+    qDebug() << "Cross fader value, called from mixxx" << p_mscrossfad->getCrossFader(); //s_a
     p_mscrossfad->performTransition(); //s_a
 
 }
@@ -445,6 +449,8 @@ void MixxxMainWindow::initialize(QApplication* pApp, const CmdlineArgs& args) {
     // corrupted. See bug 521509 -- bkgood ?? -- vrince
     setCentralWidget(m_pWidgetParent);
     // The old central widget is automatically disposed.
+
+    //p_mscrossfad->performTransition(); //s_a
 }
 
 void MixxxMainWindow::finalize() {
