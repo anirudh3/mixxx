@@ -232,6 +232,13 @@ AutoDJProcessor::AutoDJError AutoDJProcessor::fadeNow() {
         } else if (crossfader >= -0.3 && rightDeck.isPlaying()) {
             // right deck is playing and the crossfader is on the right
 
+            // get the transition time by passing the number of bars over which the user wants to fade, s_a
+            rightDeck.fadeDuration = p_mscrossfad->fadercalc(2)/100 ; //s_a
+
+            rightDeck.posThreshold = rightDeck.playPosition() -
+                    ((crossfader + 1.0) / 2 * (rightDeck.fadeDuration)); //s_a
+            rightDeck.setRepeat(false); //s_a
+
 //            // Make sure rightDeck.fadeDuration is up to date.
 //            calculateTransition(&rightDeck, &leftDeck);
 
