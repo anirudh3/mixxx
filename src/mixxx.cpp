@@ -152,9 +152,9 @@ MixxxMainWindow::MixxxMainWindow(QApplication* pApp, const CmdlineArgs& args)
     initialize(pApp, args);
 
 
-    p_mscrossfad = new MSCrossFader(); //s_a
-    qDebug() << "Cross fader value, called from mixxx" << p_mscrossfad->getCrossFader(); //s_a
-    p_mscrossfad->performTransition(); //s_a
+    //p_mscrossfad = new MSCrossFader(); //s_a
+    //qDebug() << "Cross fader value, called from mixxx" << p_mscrossfad->getCrossFader(); //s_a
+    //p_mscrossfad->performTransition(); //s_a
 
 }
 

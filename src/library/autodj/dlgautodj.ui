@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
+    <width>582</width>
     <height>399</height>
    </rect>
   </property>
@@ -88,7 +88,7 @@
         <string>Trigger the transition to the next track.</string>
        </property>
        <property name="text">
-        <string>Fade Now</string>
+        <string>POC</string>
        </property>
       </widget>
      </item>
@@ -168,8 +168,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/mixxx.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -191,7 +191,7 @@ AutoDJProcessor::AutoDJError AutoDJProcessor::fadeNow() {
         return ADJ_NOT_TWO_DECKS;
     }
 
-//    p_mscrossfad->getCrossFader(); //s_a
+    p_mscrossfad->getCrossFader(); //s_a
 //    qDebug() << "cross reverse value:" << m_pCOCrossfaderReverse->toBool(); //s_a
 //    qDebug() << "cross fader value:" << m_pCOCrossfader->get(); //s_a
 //    //printf("value of cross fader in auto dj: %f",p_mscrossfad->getCrossFader()); //s_a
@@ -206,6 +206,9 @@ AutoDJProcessor::AutoDJError AutoDJProcessor::fadeNow() {
 
         if (crossfader <= 0.3 && leftDeck.isPlaying()) {
             // left deck is playing and the crossfader is on the left
+
+            //Lower the lowFilter of the Left Deck
+            p_mscrossfad->performTransition(1);
 
 
             // get the transition time by passing the number of bars over which the user wants to fade, s_a
@@ -231,6 +234,9 @@ AutoDJProcessor::AutoDJError AutoDJProcessor::fadeNow() {
 //            leftDeck.setRepeat(false);
         } else if (crossfader >= -0.3 && rightDeck.isPlaying()) {
             // right deck is playing and the crossfader is on the right
+
+            //lower the lowFilter of the right deck
+            p_mscrossfad->performTransition(2);
 
             // get the transition time by passing the number of bars over which the user wants to fade, s_a
             rightDeck.fadeDuration = p_mscrossfad->fadercalc(2)/100 ; //s_a
@@ -403,7 +409,9 @@ void AutoDJProcessor::controlEnable(double value) {
 }
 
 void AutoDJProcessor::controlFadeNow(double value) {
+    qDebug() << "Value of FadeNow:" << value; //s_a
     if (value > 0.0) {
+
         fadeNow();
     }
 }

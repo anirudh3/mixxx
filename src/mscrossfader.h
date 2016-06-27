@@ -9,6 +9,7 @@
 //#include <QWidget>
 #include "control/controlproxy.h"
 #include "control/controllinpotmeter.h"
+#include <QThread>
 
 //class MSCrossFaderData;
 
@@ -17,7 +18,7 @@ class MSCrossFader: public QObject
     Q_OBJECT
 public:
     MSCrossFader();
-    void performTransition();
+    void performTransition(int channel);
     double getCrossFader();
     void setCrossFader(double);
     double getBPMnow();
@@ -29,9 +30,23 @@ public:
 private:
 //    QSharedDataPointer<MSCrossFaderData> data;
     ControlProxy* mscrossfad;
-    ControlProxy* getBPM;
+    ControlProxy* getBPML;
+    ControlProxy* getBPMR;
+    ControlProxy* getHiFil;
+    ControlProxy* getMiFil;
+    ControlProxy* getLoFilL;
+    ControlProxy* getLoFilR;
+
     //ControlLinPotmeter* getEngBPM;
 
+};
+
+class Sleeper : public QThread
+{
+public:
+    static void usleep(unsigned long usecs){QThread::usleep(usecs);}
+    static void msleep(unsigned long msecs){QThread::msleep(msecs);}
+    static void sleep(unsigned long secs){QThread::sleep(secs);}
 };
 
 #endif // MSCROSSFADER_H
